@@ -24,6 +24,11 @@ variable "server_ami" {
   default = "ami-0fb653ca2d3203ac1"
 }
 
+variable "server_text" {
+  description = "Text for the web server to display"
+  type = string
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These parameters have reasonable defaults.

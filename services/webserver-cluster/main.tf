@@ -17,6 +17,7 @@ resource "aws_launch_configuration" "example" {
 
   # Render the User Data script as a template
   user_data = templatefile("${path.module}/user-data.sh", {
+    server_text = var.server_text
     server_port = var.server_port
     db_address  = data.terraform_remote_state.db.outputs.endpoint_address
     db_port     = data.terraform_remote_state.db.outputs.port
@@ -37,6 +38,15 @@ resource "aws_autoscaling_group" "example" {
 
   min_size = var.min_size
   max_size = var.max_size
+
+  # Use instance refresh to roll out any changes to the ASG
+  # AWS will automatically perform a rolling refresh if any changes are made to the launch configuration, e.g. AMI
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+    }
+  }
 
   tag {
     key                 = "Name"
