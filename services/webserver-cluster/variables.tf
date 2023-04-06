@@ -52,3 +52,9 @@ variable "custom_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "enable_autoscaling_schedule" {
+  description = "Set to true to enable scheduled autoscaling"
+  type = bool
+  default = false
+}

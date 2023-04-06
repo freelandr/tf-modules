@@ -44,7 +44,7 @@ resource "aws_autoscaling_group" "example" {
     propagate_at_launch = true
   }
 
-  dynamic "tag" {
+  dynamic "tag" {                                           # create multiple inline tags
     for_each = var.custom_tags
     content {
       key                 = tag.key
@@ -52,6 +52,28 @@ resource "aws_autoscaling_group" "example" {
       propagate_at_launch = true
     }
   }
+}
+
+resource "aws_autoscaling_schedule" "scale_out_business_hours" {
+  count = var.enable_autoscaling_schedule ? 1 : 0                         # resource is conditional
+  scheduled_action_name = "${var.cluster_name}-scale-out-business-hours"
+  min_size              = 2
+  max_size              = 10
+  desired_capacity      = 10
+  recurrence            = "0 9 * * *"
+
+  autoscaling_group_name = module.webserver_cluster.asg_name
+}
+
+resource "aws_autoscaling_schedule" "scale_in_night" {
+  count = var.enable_autoscaling_schedule ? 1 : 0                         # resource is conditional
+  scheduled_action_name = "${var.cluster_name}-scale-in-night"
+  min_size              = 2
+  max_size              = 10
+  desired_capacity      = 2
+  recurrence            = "0 17 * * *"
+
+  autoscaling_group_name = module.webserver_cluster.asg_name
 }
 
 resource "aws_security_group" "instance" {
