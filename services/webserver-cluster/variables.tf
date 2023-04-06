@@ -18,6 +18,12 @@ variable "db_remote_state_key" {
   type        = string
 }
 
+variable "server_ami" {
+  description = "The AMI to use for EC2 instances in the ASG"
+  type = string
+  default = "ami-0fb653ca2d3203ac1"
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These parameters have reasonable defaults.
